@@ -25,7 +25,7 @@ Pay attention to what's returned. You are looking for SessionID (labeled: `ubus_
 Reboot your Oboo and you should be able to connect to it via it's IP with the root/password login.
 
 ## Weather
-The weather card is broken because the Oboo was using a public Yahoo Weather API that was decomissioned on January 3, 2019. Backup the yahooWeather.js file in `/usr/bin/js` with the contents of [this](https://github.com/ouellettetech/oboo/blob/master/usr/bin/js/openWeather.js) file. Then edit weather.js and change the call from `getYahooWeather` to `getOpenWeather`
+The weather card is broken because the Oboo was using a public Yahoo Weather API that was decomissioned on January 3, 2019. Replace the yahooWeather.js file in `/usr/bin/js` with the contents of [this](https://github.com/ouellettetech/oboo/blob/master/usr/bin/js/openWeather.js) file. Then edit weather.js and change the call from `getYahooWeather` to `getOpenWeather`
 
 ## Fixing the Battery Indicator
 Open `/usr/bin/js/mcu.js` and change:
