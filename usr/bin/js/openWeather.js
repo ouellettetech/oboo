@@ -47,38 +47,39 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
             }
 
 			var weather = "";
-			    if (jsonResult.weather[0].id < 300) {
+			if (jsonResult.weather[0].id < 300) {
 			        weather='thunderstorm';
-			    }
-				else if (jsonResult.weather[0].id < 600) {
-					weather='rain';
-				}
-			    else if (jsonResult.weather[0].id < 700) {
-			    	weather='snow'; 
-			    }
-			    else if (jsonResult.weather[0].id < 781) {
-			    	weather='fog';
-			    } 
-			    else if (jsonResult.weather[0].id < 800) {
-			    	weather='tornado';
-			    }
-			    else if (jsonResult.wind.speed > windyConditions){
-					weather='windy';
-				} 
-				else if (jsonResult.weather[0].id == 800) {
-					weather='clear';
-				}
-				else if (jsonResult.weather[0].id < 802) {
-					weather='partlycloudy';
-				}
-				else {
-					weather='cloudy';
-				}
-            var weatherObj = {
-                'temperature': tempVal,
-                'condition': weather,
-                'wind': windSpeed
-            }
+		    }
+			else if (jsonResult.weather[0].id < 600) {
+				weather='rain';
+			}
+		    else if (jsonResult.weather[0].id < 700) {
+		    	weather='snow'; 
+		    }
+		    else if (jsonResult.weather[0].id < 781) {
+		    	weather='fog';
+		    } 
+		    else if (jsonResult.weather[0].id < 800) {
+		    	weather='tornado';
+		    }
+		    else if (jsonResult.wind.speed > windyConditions){
+				weather='windy';
+			} 
+			else if (jsonResult.weather[0].id == 800) {
+				weather='clear';
+			}
+			else if (jsonResult.weather[0].id < 802) {
+				weather='partlycloudy';
+			}
+			else {
+				weather='cloudy';
+			}
+			
+	        var weatherObj = {
+				'temperature': tempVal,
+	            'condition': weather,
+	            'wind': windSpeed
+	        }
 
             return weatherObj;
         }
