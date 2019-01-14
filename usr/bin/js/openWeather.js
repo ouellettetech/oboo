@@ -59,7 +59,7 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
 			    else if (500 < 800) {
 			    	weather='tornado';
 			    }
-			    else if (9.6 > 20) {
+			    else if (jsonResult.wind.speed > 20) {
 					weather='windy';
 				} 
 				else if (500 == 800) {
