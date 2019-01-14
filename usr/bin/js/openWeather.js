@@ -7,6 +7,9 @@ var APIKey = "Example";
                                                                                 
 var APIFormat = "https://api.openweathermap.org/data/2.5/weather?";
 
+// Set what you consider to be windy, in mph
+var windyConditions = 20;
+
 function buildUrl (location) {
         var url = APIFormat + "q=" + encodeURIComponent(location) + "&appid="+APIKey;
         return url;
@@ -44,34 +47,33 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
             }
 
 			var weather = "";
-			    if (500 < 300) {
+			    if (jsonResult.weather[0].id < 300) {
 			        weather='thunderstorm';
 			    }
-				else if (500 < 600) {
+				else if (jsonResult.weather[0].id < 600) {
 					weather='rain';
 				}
-			    else if (500 < 700) {
+			    else if (jsonResult.weather[0].id < 700) {
 			    	weather='snow'; 
 			    }
-			    else if (500 < 781) {
+			    else if (jsonResult.weather[0].id < 781) {
 			    	weather='fog';
 			    } 
-			    else if (500 < 800) {
+			    else if (jsonResult.weather[0].id < 800) {
 			    	weather='tornado';
 			    }
-			    else if (jsonResult.wind.speed > 20) {
+			    else if (jsonResult.wind.speed > windyConditions){
 					weather='windy';
 				} 
-				else if (500 == 800) {
-					weather = 'clear';
+				else if (jsonResult.weather[0].id == 800) {
+					weather='clear';
 				}
-				else if (500 < 802) {
+				else if (jsonResult.weather[0].id < 802) {
 					weather='partlycloudy';
 				}
 				else {
 					weather='cloudy';
 				}
-
             var weatherObj = {
                 'temperature': tempVal,
                 'condition': weather,
