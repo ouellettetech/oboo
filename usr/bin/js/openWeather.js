@@ -1,11 +1,12 @@
-var APIKey = "Example";               
-
 //
 // Has to be saved as yahooWeather.js for now, until someone figures out how to import in their runtime.
 // Also you need to edit the weather.js to change getYahooWeather to   getOpenWeather
 // And get an api key from : https://openweathermap.org/price (free one should be fine.)   
-                                                                                
+
 var APIFormat = "https://api.openweathermap.org/data/2.5/weather?";
+
+// Set what you consider to be windy, in mph
+var windyConditions = 20;
 
 function buildUrl (location) {
         var url = APIFormat + "q=" + encodeURIComponent(location) + "&appid="+APIKey;
@@ -44,39 +45,32 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
             }
 
             var weather = "";
-            switch (jsonResult.weather[0].id){
-                case (jsonResult.weather[0].id < 300):
+            if (jsonResult.weather[0].id < 300) {
                     weather='thunderstorm';
-                    break;
-                case (jsonResult.weather[0].id < 600):
-                    weather='rain';
-                    break;
-                case (jsonResult.weather[0].id < 700):
-                    weather='snow';
-                    break;
-                case (jsonResult.weather[0].id < 781):
-                    weather='fog';
-                    break;
-                case (jsonResult.weather[0].id < 800):
-                    weather='tornado';
-                    break;
-                default:
-                    if(jsonResult.wind.speed>20){
-                        weather='windy';
-                    } else {
-                        switch(jsonResult.weather[0].id){
-                            case (jsonResult.weather[0].id===800):
-                                weather='clear';
-                                break;
-                            case (jsonResult.weather[0].id<802):
-                                weather='partlycloudy';
-                                break;
-                            default:
-                                weather='cloudy';
-                                break;
-                        }
-                    }
-                    break;
+            }
+            else if (jsonResult.weather[0].id < 600) {
+                weather='rain';
+            }
+            else if (jsonResult.weather[0].id < 700) {
+                weather='snow'; 
+            }
+            else if (jsonResult.weather[0].id < 781) {
+                weather='fog';
+            } 
+            else if (jsonResult.weather[0].id < 800) {
+                weather='tornado';
+            }
+            else if (jsonResult.wind.speed > windyConditions){
+                weather='windy';
+            } 
+            else if (jsonResult.weather[0].id == 800) {
+                weather='clear';
+            }
+            else if (jsonResult.weather[0].id < 802) {
+                weather='partlycloudy';
+            }
+            else {
+                weather='cloudy';
             }
 
             var weatherObj = {
