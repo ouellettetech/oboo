@@ -1,16 +1,6 @@
 #!/bin/bash
 set -ex
 
-###############################
-# THIS SCRIPT IS UN-TESTED!!! #
-###############################
-#
-# This is a port of the PowerShell script to Bash.
-# I don't have my Oboo handy at the moment, so can't test it.
-# There are likely errors in the script that need to be debugged,
-# so use at your own risk until I have a chance to fix everything.
-#
-
 echo 'NOTE: Make sure you are connected to the Oboo access point before running this script!'
 echo "Also, this script requires curl and jq.  Make sure they're installed before executing."
 
