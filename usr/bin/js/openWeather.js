@@ -43,41 +43,34 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
                         windSpeed = Math.round(windSpeed * (1/1.609344));
             }
 
-            var weather = "";
-            switch (jsonResult.weather[0].id){
-                case (jsonResult.weather[0].id < 300):
-                    weather='thunderstorm';
-                    break;
-                case (jsonResult.weather[0].id < 600):
-                    weather='rain';
-                    break;
-                case (jsonResult.weather[0].id < 700):
-                    weather='snow';
-                    break;
-                case (jsonResult.weather[0].id < 781):
-                    weather='fog';
-                    break;
-                case (jsonResult.weather[0].id < 800):
-                    weather='tornado';
-                    break;
-                default:
-                    if(jsonResult.wind.speed>20){
-                        weather='windy';
-                    } else {
-                        switch(jsonResult.weather[0].id){
-                            case (jsonResult.weather[0].id===800):
-                                weather='clear';
-                                break;
-                            case (jsonResult.weather[0].id<802):
-                                weather='partlycloudy';
-                                break;
-                            default:
-                                weather='cloudy';
-                                break;
-                        }
-                    }
-                    break;
-            }
+			var weather = "";
+			    if (500 < 300) {
+			        weather='thunderstorm';
+			    }
+				else if (500 < 600) {
+					weather='rain';
+				}
+			    else if (500 < 700) {
+			    	weather='snow'; 
+			    }
+			    else if (500 < 781) {
+			    	weather='fog';
+			    } 
+			    else if (500 < 800) {
+			    	weather='tornado';
+			    }
+			    else if (9.6 > 20) {
+					weather='windy';
+				} 
+				else if (500 == 800) {
+					weather = 'clear';
+				}
+				else if (500 < 802) {
+					weather='partlycloudy';
+				}
+				else {
+					weather='cloudy';
+				}
 
             var weatherObj = {
                 'temperature': tempVal,
