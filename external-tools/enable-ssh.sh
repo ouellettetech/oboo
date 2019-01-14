@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 ###############################
 # THIS SCRIPT IS UN-TESTED!!! #
@@ -16,21 +16,21 @@ echo "Also, this script requires curl and jq.  Make sure they're installed befor
 
 # Factory root password for Oboo
 # (can be ascertained from setup.getoboo.com, under webpack///.src/api/ubus.js in the debugger console under Sources)
-factoryRootUser='root'
-factoryRootPassword='uUhdKGPJw52c61gXDXfQQsRd'
-#factoryRootPassword='onioneer'  # Onion Omega default root password
+factoryRootUser="root"
+factoryRootPassword="uUhdKGPJw52c61gXDXfQQsRd"
+#factoryRootPassword="onioneer"  # Onion Omega default root password
 defaultIpAddress='192.168.3.1'
 
 # Get the IP address from the user
 read -erp "Enter the IP address of your Oboo clock (default $defaultIpAddress)" ipAddr
-if [-z $ipAddr] then
+if [ -z $ipAddr ]; then
     ipAddr=$defaultIpAddress
 fi
 
 # Make a call to the API to verify the device is present
-versionInfo=$(curl -X GET -H "Content-Type:application/json" "http://$ipaddr/cgi-bin/ver")
+versionInfo=$(curl -X GET -H "Content-Type:application/json" "http://$ipAddr/cgi-bin/ver")
 deviceName=$(echo "$versionInfo"|jq '.device_name')
-if [-z $deviceName] then
+if [ -z $deviceName ]; then
     echo "Oboo device did not respond to /cgi-bin/ver with expected response!  Make sure it's connected to wi-fi, and you can ping the IP address."
     exit
 fi
@@ -39,57 +39,63 @@ echo "Found $deviceName!"
 # Authenticate via ubus's JSON RPC endpoint
 # https://www.jsonrpc.org/specification
 # https://openwrt.org/docs/techref/ubus
-token='00000000000000000000000000000000'
+token="00000000000000000000000000000000"
 ubusUrl="http://$ipAddr/ubus"
-read -r -d '' payload <<EOF
+payload()
 {
-    'jsonrpc': '2.0',
-    'id': 0,
-    'method': 'call',
-    'params': [
-        $token,
-        'session',
-        'login',
-	{
-            'username': $factoryRootUser
-            'password': $factoryRootPassword
+  cat <<EOF
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "call",
+    "params": [
+        "$token",
+        "session",
+        "login",
+        {
+            "username": "$factoryRootUser",
+            "password": "$factoryRootPassword"
         }
     ]
 }
 EOF
-sessionInfo=$(curl -X POST -H "Content-Type:application/json" "$ubusUrl" -d "$payload")
-token=$(echo "$sesisonInfo"|jq '.result.ubus_rpc_session')
-if [-z $token] then
+}
+sessionInfo=$(curl -X POST -H "Content-Type:application/json" -d "$(payload)" "$ubusUrl")
+newtoken=$(echo "$sessionInfo"|jq '.result[1].ubus_rpc_session')
+if [ -z $newtoken ]; then
     echo "UBus session was not acquired!  This possibly means the root password is invalid."
     echo "Debugging output:"
     echo "$sessionInfo"
     exit
 fi
-$token = $sessionInfo.result.ubus_rpc_session
+#$token = $newtoken
 
 
 # Now that we have an authenticated session, execute the command to enable SSH at boot
 echo "Enabling SSH at boot time..."
-read -r -d '' payload <<EOF
+payload()
 {
-    'jsonrpc': '2.0',
-    'id': 0,
-    'method': 'call',
-    'params': [
-        '$token',
-        'file',
-        'exec',
+  cat <<EOF
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "call",
+    "params": [
+        $newtoken,
+        "file",
+        "exec",
         {
-            'command': '/etc/init.d/dropbear',
-            'params': ['enable']
+            "command": "/etc/init.d/dropbear",
+            "params": ["enable"]
         }
     ]
 }
 EOF
-result=$(curl -X POST -H "Content-Type:application/json" "$ubusUrl" -d "$payload")
-stdout=$(echo "$result"|jq '.result.stdout')
+}
+result=$(curl -X POST -H "Content-Type:application/json" -d "$(payload)" "$ubusUrl")
+stdout=$(echo "$result"|jq '.result[1].stdout')
 echo $result
-if [-z $stdout] then
+if [ -z $stdout ]; then
     echo "Error executing: /etc/init.d/dropbear enable"
     exit
 fi
@@ -97,26 +103,29 @@ fi
 
 # Who wants to wait for a reboot to access SSH?  Not me!  So, start up the SSH service!
 echo "Starting SSH service..."
-read -r -d '' payload <<EOF
+payload()
 {
-    'jsonrpc': '2.0',
-    'id': 0,
-    'method': 'call',
-    'params': [
-        '$token',
-        'file',
-        'exec',
+  cat <<EOF
+{
+    "jsonrpc": '2.0',
+    "id": 0,
+    "method": "call",
+    "params": [
+        $newtoken,
+        "file",
+        "exec",
         {
-            'command': '/etc/init.d/dropbear',
-            'params': ['start']
+            "command": "/etc/init.d/dropbear",
+            "params": ["start"]
         }
     ]
 }
 EOF
-result=$(curl -X POST -H "Content-Type:application/json" "$ubusUrl" -d "$payload")
-stdout=$(echo "$result"|jq '.result.stdout')
+}
+result=$(curl -X POST -H "Content-Type:application/json" -d "$(payload)" "$ubusUrl")
+stdout=$(echo "$result"|jq '.result[1].stdout')
 echo $result
-if [-z $stdout] then
+if [ -z $stdout ]; then
     echo "Error executing: /etc/init.d/dropbear start"
     exit
 fi
