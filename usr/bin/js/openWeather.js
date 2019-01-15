@@ -1,7 +1,9 @@
+var APIKey = "Example";
+
 //
 // Has to be saved as yahooWeather.js for now, until someone figures out how to import in their runtime.
 // Also you need to edit the weather.js to change getYahooWeather to   getOpenWeather
-// And get an api key from : https://openweathermap.org/price (free one should be fine.)   
+// And get an api key from : https://openweathermap.org/price (free one should be fine.)
 
 var APIFormat = "https://api.openweathermap.org/data/2.5/weather?";
 
@@ -52,17 +54,17 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
                 weather='rain';
             }
             else if (jsonResult.weather[0].id < 700) {
-                weather='snow'; 
+                weather='snow';
             }
             else if (jsonResult.weather[0].id < 781) {
                 weather='fog';
-            } 
+            }
             else if (jsonResult.weather[0].id < 800) {
                 weather='tornado';
             }
             else if (jsonResult.wind.speed > windyConditions){
                 weather='windy';
-            } 
+            }
             else if (jsonResult.weather[0].id == 800) {
                 weather='clear';
             }
