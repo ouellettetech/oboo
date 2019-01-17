@@ -140,12 +140,7 @@ function createCard () {
     initCard(JSON.stringify(cardObj), true);
 }
 
-function isNighttime () {
-    const hours = new Date().getHours()
-    return hours < 6 || hours > 20    
-}
-
-function getImageName(condition) {
+function getImageName(condition,isNighttime) {
     if(isNighttime){
         return weatherImg[condition+"Night"];
     }
@@ -156,7 +151,6 @@ function getImageName(condition) {
 function updateWeather () {
     var updateObj = generateUpdateCardObj(cardInfo.id);
     var weather = getOpenWeather(cardInfo.params.location, cardInfo.params.tempUnit, cardInfo.params.distanceUnit);
-
     if (weather !== null) {
         updateObj.elements.push(generateElementUpdate(
                                     elementId.weatherTemperature,
@@ -172,7 +166,7 @@ function updateWeather () {
                                 );
         updateObj.elements.push(generateElementUpdate(
                                     elementId.weatherMainImage,
-                                    generateImgPath(imgRootPath, getImageName(weather.condition))
+                                    generateImgPath(imgRootPath, getImageName(weather.condition,weather.isNight))
                                     )
                                 )
 
