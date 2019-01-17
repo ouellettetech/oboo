@@ -76,17 +76,15 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
             else {
                 weather='cloudy';
             }
-	var datenow = new Date();
-	var timenow = Math.floor(datenow.getTime()/1000);
-	var isNight = (timenow < jsonResult.sys.sunrise || timenow > jsonResult.sys.sunset);
-
-
-
+		var datenow = new Date();
+		var timenow = Math.floor(datenow.getTime()/1000);
+		var isNight = (timenow < jsonResult.sys.sunrise || timenow > jsonResult.sys.sunset);
+		
             var weatherObj = {
-                'temperature': tempVal,
-                'condition': weather,
-                'wind': windSpeed,
-		'isNight': isNight
+                'temperature'	: 	tempVal,
+                'condition'	: 	weather,
+                'wind'		: 	windSpeed,
+		'isNight'	: 	isNight
             }
 
             return weatherObj;
