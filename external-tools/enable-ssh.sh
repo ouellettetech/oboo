@@ -31,7 +31,7 @@ echo "Found $deviceName!"
 # https://openwrt.org/docs/techref/ubus
 token="00000000000000000000000000000000"
 ubusUrl="http://$ipAddr/ubus"
-payload()
+get_token()
 {
   cat <<EOF
 {
@@ -50,7 +50,7 @@ payload()
 }
 EOF
 }
-sessionInfo=$(curl -X POST -H "Content-Type:application/json" -d "$(payload)" "$ubusUrl")
+sessionInfo=$(curl -X POST -H "Content-Type:application/json" -d "$(get_token)" "$ubusUrl")
 newtoken=$(echo "$sessionInfo"|jq '.result[1].ubus_rpc_session')
 if [ -z $newtoken ]; then
     echo "UBus session was not acquired!  This possibly means the root password is invalid."
@@ -58,12 +58,10 @@ if [ -z $newtoken ]; then
     echo "$sessionInfo"
     exit
 fi
-#$token = $newtoken
-
 
 # Now that we have an authenticated session, execute the command to enable SSH at boot
 echo "Enabling SSH at boot time..."
-payload()
+enable_ssh()
 {
   cat <<EOF
 {
@@ -82,7 +80,7 @@ payload()
 }
 EOF
 }
-result=$(curl -X POST -H "Content-Type:application/json" -d "$(payload)" "$ubusUrl")
+result=$(curl -X POST -H "Content-Type:application/json" -d "$(enable_ssh)" "$ubusUrl")
 stdout=$(echo "$result"|jq '.result[1].stdout')
 echo $result
 if [ -z $stdout ]; then
@@ -93,11 +91,11 @@ fi
 
 # Who wants to wait for a reboot to access SSH?  Not me!  So, start up the SSH service!
 echo "Starting SSH service..."
-payload()
+start_ssh()
 {
   cat <<EOF
 {
-    "jsonrpc": '2.0',
+    "jsonrpc": "2.0",
     "id": 0,
     "method": "call",
     "params": [
@@ -112,7 +110,7 @@ payload()
 }
 EOF
 }
-result=$(curl -X POST -H "Content-Type:application/json" -d "$(payload)" "$ubusUrl")
+result=$(curl -X POST -H "Content-Type:application/json" -d "$(start_ssh)" "$ubusUrl")
 stdout=$(echo "$result"|jq '.result[1].stdout')
 echo $result
 if [ -z $stdout ]; then
