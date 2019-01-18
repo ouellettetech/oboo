@@ -76,10 +76,11 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
             else {
                 weather='cloudy';
             }
+//Solve for nighttime by checking to see if current time is not between sunrise and sunset
 		var datenow = new Date();
 		var timenow = Math.floor(datenow.getTime()/1000);
 		var isNight = (timenow < jsonResult.sys.sunrise || timenow > jsonResult.sys.sunset);
-		
+//Create the return weather object
             var weatherObj = {
                 'temperature'	: 	tempVal,
                 'condition'	: 	weather,
