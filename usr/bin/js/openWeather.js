@@ -1,4 +1,4 @@
-var APIKey = "Example";
+var APIKey = "example";
 
 //
 // Has to be saved as yahooWeather.js for now, until someone figures out how to import in their runtime.
@@ -17,6 +17,7 @@ function buildUrl (location) {
 
 function getOpenWeather (location, tempUnit, distanceUnit) {
     print('getting openweathermap weather');
+
     var result = httpRequest({
         method: 'GET',
         url: buildUrl(location)
@@ -41,9 +42,10 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
 
                 }
                 var windSpeed = jsonResult.wind.speed;
+		print(windSpeed);
                 if( distanceUnit !== 'metric') {
                         // convert metric wind speed to imperial
-                        windSpeed = Math.round(windSpeed * (1/1.609344));
+                        windSpeed = Math.round(windSpeed * 2.23694);
             }
 
             var weather = "";
@@ -74,11 +76,16 @@ function getOpenWeather (location, tempUnit, distanceUnit) {
             else {
                 weather='cloudy';
             }
-
+//Solve for nighttime by checking to see if current time is not between sunrise and sunset
+		var datenow = new Date();
+		var timenow = Math.floor(datenow.getTime()/1000);
+		var isNight = (timenow < jsonResult.sys.sunrise || timenow > jsonResult.sys.sunset);
+//Create the return weather object
             var weatherObj = {
-                'temperature': tempVal,
-                'condition': weather,
-                'wind': windSpeed
+                'temperature'	: 	tempVal,
+                'condition'	: 	weather,
+                'wind'		: 	windSpeed,
+		'isNight'	: 	isNight
             }
 
             return weatherObj;
