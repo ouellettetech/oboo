@@ -8,6 +8,8 @@ import openWeather as weatherApi
 import mqttcCardSetup
 import cardLib
 import atexit
+from signal import *
+import sys, time
 
 class WeatherElementIds:
   weatherUnitIndicator = 0
@@ -247,14 +249,17 @@ def updateDate(mqttc):
         curCard.prevCalendarDay = curDate.day
         cardLib.updateCard(mqttc, updateObj)
 
-def exit_handler():
+def exit_handler(signum=0, frame=None):
     global curCard
     global gmqttc
-    print('My application is ending!')
+    print('My application is ending! with signal {0}'.format(signum))
     cardLib.removeCard(gmqttc, curCard)
     #remove_card
 
 atexit.register(exit_handler)
+for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
+    signal(sig, exit_handler)
+
 
 def mainLoop(mqttc):
     # Only run if card info is setup.
