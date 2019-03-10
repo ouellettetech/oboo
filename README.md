@@ -45,8 +45,13 @@ The default wireless password for the Oboo is `123456789`. This is unsecure but 
 ## Enabling Bluetooth Audio
 Bluetooth should already be enabled for Kickstarter backers but if it's not, just execute `gpioctl dirout-high 3`. If you see this setting is not persisting between reboots, please add `gpioctl dirout-high 3` to `/etc/rc.local`. See [more](https://getoboo.com/community/topic/enable-bluetooth-audio-on-oboo/).
 
+## Reseting the System (In case you make a mistake)
+/sbin/firstboot -y
+
 ## Miscellaneous Links
 * [Gitter Chat](https://gitter.im/oboo-development/community)
 * [Updating the firmware with SSH certificate bypass](https://getoboo.com/community/topic/update-issues-and-workarounds/)
 * [Image converter to change PNG to BIN](https://getoboo.com/image-converter/)
 * [Repository of firmware and files](https://getoboo.com/image-converter/)
+* [External USB Root Filesystem (More space)](https://openwrt.org/docs/guide-user/additional-software/extroot_configuration)
+
