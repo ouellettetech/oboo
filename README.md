@@ -54,4 +54,4 @@ Bluetooth should already be enabled for Kickstarter backers but if it's not, jus
 * [Image converter to change PNG to BIN](https://getoboo.com/image-converter/)
 * [Repository of firmware and files](https://getoboo.com/image-converter/)
 * [External USB Root Filesystem (More space)](https://openwrt.org/docs/guide-user/additional-software/extroot_configuration)
-* [Oboo Setting to enable ssh] (http://setup.getoboo.com/?dev=1#/welcome)
+* [Oboo Setting to enable ssh ](http://setup.getoboo.com/?dev=1#/welcome)
