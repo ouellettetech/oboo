@@ -16,16 +16,28 @@ Using a tool such as [Postman](https://www.getpostman.com/), make sure you are c
 {"jsonrpc":"2.0","id":0,"method":"call","params":["00000000000000000000000000000000","session","login",{"username":"root","password":"uUhdKGPJw52c61gXDXfQQsRd"}]}
 ```
 
-Pay attention to what's returned. You are looking for SessionID (labeled: `ubus_rpc_session`). Copy this value and send a new POST to the same address, with this body:
+Pay attention to what's returned. You are looking for SessionID (labeled: `ubus_rpc_session`). Copy this value and send a new POST to the same address, with this body, and SessionID replaced with the 32-character hexadecimal string following ubus_rpc_session:
 
 ```
 {"jsonrpc":"2.0","id":0,"method":"call","params":["SessionID","file","exec",{"command":"/bin/ln","params":["-s","/etc/init.d/dropbear","/etc/rc.d/S21dropbear"]}]}
+```
+
+Do all of that using curl (in linux of course) thusly:
+
+```
+SESSIONID=$(curl -X POST -H 'Content-type: application/json' --data '{"jsonrpc":"2.0","id":0,"method":"call","params":["00000000000000000000000000000000","session","login",{"username":"root","password":"uUhdKGPJw52c61gXDXfQQsRd"}]}' http://oboo-clock-aade.local/ubus | sed 's/.*ubus_rpc_session":"\(\w\+\)".*/\1/')
+echo $SESSIONID # should be something like 1ea3cdc0c84387f6f148a474db64380f not a bunch of json
+curl -X POST -H 'Content-type: application/json' --data '{"jsonrpc":"2.0","id":0,"method":"call","params":["'$SESSIONID'","file","exec",{"command":"/bin/ln","params":["-s","/etc/init.d/dropbear","/etc/rc.d/S21dropbear"]}]}' http://192.168.3.1/ubus
 ```
 
 Reboot your Oboo and you should be able to connect to it via it's IP with the root/password login.
 
 ## Weather
 The weather card is broken because the Oboo was using a public Yahoo Weather API that was decomissioned on January 3, 2019. Replace the yahooWeather.js file in `/usr/bin/js` with the contents of [this](https://github.com/ouellettetech/oboo/blob/master/usr/bin/js/openWeather.js) file. Then edit weather.js and change the call from `getYahooWeather` to `getOpenWeather`
+
+```
+cd /usr/bin/js/ && wget https://github.com/ouellettetech/oboo/raw/master/usr/bin/js/openWeather.js && chmod a+x openWeather.js && mv yahooWeather.js yahooWeather.js.old && cp openWeather.js yahooWeather.js && sed -i.orig 's/Yahoo/Open/' weather.js
+```
 
 ## Fixing the Battery Indicator
 Open `/usr/bin/js/mcu.js` and change:
