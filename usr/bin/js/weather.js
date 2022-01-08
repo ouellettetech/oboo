@@ -84,7 +84,7 @@ function createCard () {
                         );
 
     // temperature unit indicator and value
-    // TODO: implement fahrenheit handling
+    // TODO: implement a letter after ° symbol indicating fahrenheit, celsius, or kelvin, according to cardInfo.params.tempUnit
     cardObj.elements.push(generateImageElement(
                             elementId.weatherUnitIndicator,
                             generateImgPath(imgRootPath, weatherImg['degree']),
