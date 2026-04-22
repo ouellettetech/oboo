@@ -1,3 +1,11 @@
+# ⚠️ Deprecated
+
+This repository was used for patching the Oboo firmware before the official
+source code was released.
+
+➡️ All active development has moved to:
+https://github.com/ouellettetech/Oboo-Source
+
 # Oboo Smart Clock
 The Oboo Smart Clock was a [Kickstarter](https://www.kickstarter.com/projects/onion/oboo-smart-clock-wifi-connected-and-gesture-contro) project by The Onion Corporation that promised a device that marries a large format clock with a smart display powered by the Onion Omega2 IoT platform. Upon delivery, it was discovered that a number of basic functionality was broken and missing entirely. This repository will serve as a resource to help users get their units functioning properly.
 
